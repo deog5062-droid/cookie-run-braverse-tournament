@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쿠키런 브레이버스 2026년 10월 대회 현황 대시보드</title>
+<style>
+:root{--bg:#fff5f3;--panel:#ffffff;--ink:#2d3748;--muted:#718096;--line:#e2e8f0;--coral:#ff6b6b;--coral-light:#ffe3e3;--mint:#38d9a9;--mint-light:#e6fcf5;--shadow:0 10px 30px rgba(255,107,107,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#ff8787,#38d9a9);color:#1a202c;padding:32px clamp(16px,4vw,48px);position:relative;overflow:hidden}
+header .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.8}h1{margin:7px 0 8px;font-size:clamp(24px,4vw,36px)}header p{margin:0;color:#2d3748;max-width:850px;line-height:1.6;font-weight:500}
+main{max-width:1500px;margin:0 auto;padding:24px clamp(12px,3vw,36px) 48px}
+.toolbar,.panel,.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.toolbar{padding:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+button,.file-label{border:0;border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer;font-size:14px;background:#f1f3f5;color:#495057}
+button.primary{background:var(--coral);color:white}button.danger{background:#fff0f3;color:#e03131}button:disabled{opacity:.4;cursor:not-allowed}
+input,select,textarea{font:inherit;color:inherit;border:1px solid #ced4da;border-radius:8px;padding:9px 10px;background:white;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid #ff8787;border-color:var(--coral)}
+.notice{font-size:13px;color:var(--muted);line-height:1.5;margin:8px 2px 18px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}.tab{background:white;border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:8px 16px;font-weight:650}.tab.active{background:var(--coral);color:white;border-color:var(--coral)}
+.panel{padding:20px;margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}.panel h2{font-size:20px;margin:0 0 5px}.sub{color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.stat{padding:18px;border-radius:16px;position:relative}.stat:nth-child(1){background:#fff}.stat:nth-child(2){background:var(--coral-light);border-color:#ffc9c9}.stat:nth-child(3){background:var(--mint-light);border-color:#c3fae8}.stat:nth-child(4){background:#fff9db;border-color:#ffec99}
+.stat .label{font-size:13px;color:var(--muted);font-weight:600}.stat .value{font-size:26px;font-weight:800;margin-top:6px}
+.secret-trigger{position:absolute;top:12px;right:12px;width:24px;height:24px;cursor:pointer;opacity:0.15;display:flex;align-items:center;justify-content:center;font-size:14px;transition:opacity .2s}
+.secret-trigger:hover{opacity:0.8}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;max-height:65vh}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:780px;font-size:14px;background:white}
+th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;white-space:nowrap}
+th{background:#f8f9fa;position:sticky;top:0;z-index:2;font-weight:700}
+.row-actions{display:flex;gap:4px}.row-actions button{padding:6px 10px;font-size:12px}
+.region-averages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:14px 0 20px}.region-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}
+.region-card .region-name{font-size:15px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.region-card .region-value{font-size:18px;line-height:1.5;font-weight:800}
+.region-card .region-detail{font-size:14px;color:#495057;margin-top:8px;font-weight:600}
+.deck-panel table{min-width:500px}
+.color-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.dot-red{background:#fa5252}.dot-yellow{background:#fab005}.dot-green{background:#40c057}.dot-blue{background:#339af0}.dot-purple{background:#ae3ec9}.dot-black{background:#212529}
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;background:#e9ecef;color:#495057}
+.badge.upcoming{background:#e7f5ff;color:#1971c2}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.hidden{display:none!important}
+footer{font-size:13px;color:var(--muted);line-height:1.6;padding:0 4px}
+@media(max-width:760px){.region-averages{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{align-items:stretch}.toolbar button,.toolbar input{flex:1}.toolbar .spacer{display:none}.panel{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow" id="headerEyebrow">Tournament data dashboard</div>
+  <h1 id="mainTitle">쿠키런 브레이버스 2026년 10월 대회 현황</h1>
+  <p>지역·매장·날짜·참가 인원·우승 덱을 관리하고, 실시간 날짜 기준 개최·예정 현황과 덱 색상별 우승 통계를 확인합니다.</p>
+</header>
+<main>
+  <div class="toolbar">
+    <span id="lockStatus" style="font-weight:700">🔒 읽기 전용</span>
+    <button id="lockBtn" class="hidden danger">잠그기</button>
+    <span class="spacer"></span>
+    <button id="addMonthBtn" class="primary hidden">+ 다음 달</button>
+    <button id="addRowBtn" class="edit-only hidden">+ 행 추가</button>
+    <button id="exportBtn" class="edit-only hidden">CSV 내보내기</button>
+    <label class="file-label edit-only hidden" id="importLabel" for="importFile" style="cursor:pointer">CSV 가져오기</label>
+    <input id="importFile" type="file" accept=".csv,text/csv" class="hidden edit-only">
+    <button id="resetBtn" class="danger edit-only hidden">초기화</button>
+  </div>
+  
+  <div class="tabs" id="monthTabs"></div>
+  <div class="notice" id="criteriaNotice">기준일: 계산 중...</div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">등록된 데이터 행</div><div class="value" id="totalCount">0</div></div>
+    <div class="stat">
+      <div class="label">개최된 대회</div>
+      <div class="value" id="heldCount">0</div>
+      <div class="secret-trigger" id="secretTrigger" title="관리자 모드">🏆</div>
+    </div>
+    <div class="stat"><div class="label">총 참가 인원</div><div class="value" id="totalPeople">0</div></div>
+    <div class="stat"><div class="label">개최 대회 평균 인원</div><div class="value" id="avgPeople">-</div></div>
+  </div>
+
+  <section class="panel region-panel" aria-label="지역별 대회 현황">
+    <div class="panel-head"><div><h2>지역별 대회 진행 현황</h2><div class="sub">오늘 및 미래 일정은 ‘예정’으로 분리되며 미개최 합산에서 제외됩니다.</div></div></div>
+    <div class="region-averages">
+      <div class="region-card"><div class="region-name">서울</div><div class="region-value"><span id="heldSeoul">0</span> 개최 · <span id="notHeldSeoul">0</span> 미개최 · <span id="progSeoul" style="color:#1971c2">0</span> 예정</div><div class="region-detail" id="avgSeoul">평균 인원 -</div></div>
+      <div class="region-card"><div class="region-name">경기</div><div class="region-value"><span id="heldGyeonggi">0</span> 개최 · <span id="notHeldGyeonggi">0</span> 미개최 · <span id="progGyeonggi" style="color:#1971c2">0</span> 예정</div><div class="region-detail" id="avgGyeonggi">평균 인원 -</div></div>
+      <div class="region-card"><div class="region-name">지방 (서울·경기 외)</div><div class="region-value"><span id="heldLocal">0</span> 개최 · <span id="notHeldLocal">0</span> 미개최 · <span id="progLocal" style="color:#1971c2">0</span> 예정</div><div class="region-detail" id="avgLocal">평균 인원 -</div></div>
+    </div>
+  </section>
+
+  <section class="panel deck-panel" aria-label="덱 색상별 우승 통계">
+    <div class="panel-head"><div><h2>덱 색상별 우승 통계</h2><div class="sub">우승 덱 이름의 첫 글자 적·황·녹·청·자·흑을 쿠키런 덱 고유 색상으로 집계합니다.</div></div></div>
+    <div class="table-wrap"><table id="deckStatsTable"><thead><tr><th>덱 색상</th><th>우승 횟수</th><th>우승 비율</th></tr></thead><tbody>
+      <tr><td><span class="color-dot dot-red"></span>적</td><td id="winsRed" style="color:#fa5252;font-weight:700">0</td><td id="rateRed" style="color:#fa5252;font-weight:700">0%</td></tr>
+      <tr><td><span class="color-dot dot-yellow"></span>황</td><td id="winsYellow" style="color:#e67700;font-weight:700">0</td><td id="rateYellow" style="color:#e67700;font-weight:700">0%</td></tr>
+      <tr><td><span class="color-dot dot-green"></span>녹</td><td id="winsGreen" style="color:#2b8a3e;font-weight:700">0</td><td id="rateGreen" style="color:#2b8a3e;font-weight:700">0%</td></tr>
+      <tr><td><span class="color-dot dot-blue"></span>청</td><td id="winsBlue" style="color:#1864ab;font-weight:700">0</td><td id="rateBlue" style="color:#1864ab;font-weight:700">0%</td></tr>
+      <tr><td><span class="color-dot dot-purple"></span>자</td><td id="winsPurple" style="color:#862e9c;font-weight:700">0</td><td id="ratePurple" style="color:#862e9c;font-weight:700">0%</td></tr>
+      <tr><td><span class="color-dot dot-black"></span>흑</td><td id="winsBlack" style="color:#212529;font-weight:700">0</td><td id="rateBlack" style="color:#212529;font-weight:700">0%</td></tr>
+      <tr><th>집계 대상 합계</th><th id="recognizedWins">0</th><th id="recognizedTotal">0%</th></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>대회 데이터 표</h2><div class="sub" id="tableSubInfo">선택된 달의 상세 대회 정보입니다.</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="searchInput" placeholder="지역·매장·날짜·덱 검색" aria-label="데이터 검색">
+        <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input id="heldOnly" type="checkbox"> 개최된 대회만</label>
+      </div>
+    </div>
+    <div class="table-wrap"><table id="dataTable"><thead><tr><th>지역</th><th>매장명</th><th>날짜</th><th>인원 수</th><th>우승 덱</th><th class="edit-col hidden">작업</th></tr></thead><tbody></tbody></table></div>
+    <div id="noRows" class="empty hidden">이 달에 등록된 대회가 아직 없습니다.</div>
+  </section>
+  <footer>오른쪽 상단의 비밀번호 입력창을 통해 월별 편집 잠금을 해제할 수 있습니다.</footer>
+</main>
+<script>
+(() => {
+  const PASSWORD = '1432';
+  const STORAGE_KEY = 'braverseTournamentDashboard_v10_secret';
+  
+  let monthsData = {
+    "2026년 10월": [
+      ["경기 성남", "카드빈", "10월 3일", "7", "청 퓨바"], ["창원 성산", "마블보드게임", "10월 3일", "10", "자 사솔"], ["서울 역삼", "카드냥", "10월 3일", "12", "적 스탠"], ["경기 부천", "하비게임몰", "10월 3일", "9", "자 사솔"], ["창원 성산", "킴스게임즈", "10월 3일", "10", "흑 어마"], ["서울 봉천", "데쿠데쿠", "10월 3일", "4", "청 퓨바"], ["경기 평택", "하비베이스", "10월 4일", "4", "자 사솔"], ["부산 수영구", "부산더락", "10월 4일", "8", "적 스탠"], ["서울 은평구", "카드샵 와우", "10월 4일", "4", "녹 아녹"], ["서울 관악", "어바웃티씨지", "10월 4일", "17", "자 사솔"], ["경기 군포", "금정배틀시티", "10월 4일", "0", "터짐"], ["경기 평택", "스페이스 우라라 평택점", "10월 4일", "0", "터짐"], ["서울 종로", "하비게임몰 종로점", "10월 5일", "10", "적 아적"], ["서울 송파", "카드스타", "10월 5일", "5", "녹 아녹"], ["서울 강남", "카드래곤", "10월 8일", "5", "녹 아녹"], ["서울 송파", "카드스타", "10월 8일", "6", "녹 아녹"], ["서울 송파", "카드피아", "10월 9일", "12", "자 사솔"], ["경기 성남", "카드빈", "10월 10일", "6", "자 사솔"], ["서울 역삼", "카드냥", "10월 10일", "6", "녹 아녹"], ["경기 부천", "하비게임몰", "10월 10일", "7", "청 스탠"], ["서울 봉천", "데쿠데쿠", "10월 10일", "5", "적 스탠"], ["경기 부천", "리프레시", "10월 10일", "6", "녹 아녹"], ["대구 중구", "듀얼스파크", "10월 11일", "2", "터짐"], ["부산 남구", "포츈팩토리", "10월 11일", "13", "자 사솔"], ["서울 관악", "어바웃티씨지", "10월 11일", "12", "적 스탠"], ["서울 송파", "카드피아", "10월 16일", "1", "터짐"], ["서울 종로", "하비게임몰 종로점", "10월 17일", "10", "녹 아녹"], ["창원 성산", "마블보드게임", "10월 17일", "4", ""], ["경기 화성", "카드메이트", "10월 17일", "5", "녹 청녹"], ["창원 성산", "킴스게임즈", "10월 17일", "", "터짐"], ["경기 부천", "리프레시", "10월 17일", "", "터짐"], ["경기 평택", "하비베이스", "10월 18일", "", "터짐"], ["대구 중구", "듀얼스파크", "10월 18일", "", "터짐"], ["부산 수영구", "부산더락", "10월 18일", "7", ""], ["서울 은평구", "카드샵 와우", "10월 18일", "12", "청 체스판"], ["경기 군포", "금정배틀시티", "10월 18일", "1", "터짐"], ["경기 평택", "스페이스 우라라 평택점", "10월 18일", "", "터짐"], ["서울 서대문구", "리얼 카드샵", "10월 18일", "8", "청 체스판"], ["서울 강남", "카드래곤", "10월 22일", "", ""], ["서울 종로", "하비게임몰 종로점", "10월 24일", "", ""], ["서울 서대문구", "리얼 카드샵", "10월 24일", "", ""], ["서울 마포", "롤링다이스", "10월 25일", "", ""], ["부산 남구", "포츈팩토리", "10월 25일", "", ""], ["서울 관악", "어바웃티씨지", "10월 25일", "", ""], ["경기 군포", "금정배틀시티", "10월 25일", "", ""], ["서울 송파", "카드스타", "10월 29일", "", ""], ["창원 성산", "마블보드게임", "10월 31일", "", ""], ["경기 화성", "카드메이트", "10월 31일", "", ""], ["경기 부천", "하비게임몰", "10월 31일", "", ""], ["창원 성산", "킴스게임즈", "10월 31일", "", ""]],
+    "2026년 11월": [],
+    "2026년 12월": [],
+    "2027년 1월": []
+  };
+
+  let currentMonth = "2026년 10월";
+  let unlockedMonths = {}; 
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function save(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(monthsData)); } catch(e){} }
+  function load(){ try { const v = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); if(v) monthsData = v; } catch(e){} }
+
+  function parseDateStr(dateStr, monthTitle) {
+    const mMatch = monthTitle.match(/(\d{4})년\s*(\d{1,2})월/);
+    let year = 2026, month = 10;
+    if(mMatch) { year = Number(mMatch[1]); month = Number(mMatch[2]); }
+    const dayMatch = String(dateStr).match(/(\d{1,2})일/);
+    if(dayMatch) {
+      let day = Number(dayMatch[1]);
+      return new Date(year, month - 1, day);
+    }
+    return null;
+  }
+
+  function isUpcoming(dateStr) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const targetDate = parseDateStr(dateStr, currentMonth);
+    if(!targetDate) return false;
+    return targetDate >= today;
+  }
+
+  function isHeld(row) {
+    const raw = String(row[3] ?? '').trim();
+    const n = Number(raw.replace(/,/g,''));
+    if(raw !== '' && Number.isFinite(n) && n >= 4) return true;
+    return false;
+  }
+
+  function updateUI(){
+    const isUnlocked = !!unlockedMonths[currentMonth];
+    $('lockStatus').textContent = isUnlocked ? `🔓 ${currentMonth} 편집 가능` : '🔒 읽기 전용';
+    $('lockBtn').classList.toggle('hidden', !isUnlocked);
+    document.querySelectorAll('.edit-only').forEach(el => el.classList.toggle('hidden', !isUnlocked));
+    document.querySelectorAll('.edit-col').forEach(el => el.classList.toggle('hidden', !isUnlocked));
+    if($('addMonthBtn'))$('addMonthBtn').classList.toggle('hidden', !isUnlocked);
+
+    $('mainTitle').textContent = `쿠키런 브레이버스 ${currentMonth} 대회 현황`;
+    document.title = `쿠키런 브레이버스 ${currentMonth} 대회 현황 대시보드`;
+
+    const now = new Date();
+    $('criteriaNotice').textContent = `기준일: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (오늘 및 미래 일정은 '예정'으로 분류됩니다)`;
+
+    renderMonthTabs();
+    renderTable();
+  }
+
+  function renderMonthTabs() {
+    const container = $('monthTabs');
+    container.innerHTML = '';
+    Object.keys(monthsData).forEach(m => {
+      const btn = document.createElement('button');
+      btn.className = `tab ${m === currentMonth ? 'active' : ''}`;
+      btn.textContent = m;
+      btn.addEventListener('click', () => {
+        currentMonth = m;
+        $('searchInput').value = '';$('heldOnly').checked = false;
+        updateUI();
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function stats(){
+    const rows = monthsData[currentMonth] || [];
+    const held = rows.filter(r => {
+      const raw = String(r[3] ?? '').trim();
+      const n = Number(raw.replace(/,/g,''));
+      return raw !== '' && Number.isFinite(n) && n >= 4;
+    });
+    const people = held.reduce((s,r) => s + Number(String(r[3]).replace(/,/g,'')), 0);
+    
+    $('totalCount').textContent = rows.length; 
+    $('heldCount').textContent = held.length;
+    $('totalPeople').textContent = people.toLocaleString('ko-KR');$('avgPeople').textContent = held.length ? (people/held.length).toFixed(1) : '-';
+
+    const groups = {seoul:{held:0,notHeld:0,prog:0,nums:[]}, gyeonggi:{held:0,notHeld:0,prog:0,nums:[]}, local:{held:0,notHeld:0,prog:0,nums:[]}};
+    rows.forEach(r => {
+      const region = String(r[0]??'').trim();
+      const key = region.startsWith('서울') ? 'seoul' : region.startsWith('경기') ? 'gyeonggi' : 'local';
+      const raw = String(r[3]??'').trim(), n = Number(raw.replace(/,/g,''));
+      if(raw !== '' && Number.isFinite(n) && n >= 4) {
+        groups[key].held++;
+        groups[key].nums.push(n);
+      } else if(isUpcoming(r[2])) {
+        groups[key].prog++;
+      } else {
+        groups[key].notHeld++;
+      }
+    });
+
+    const ids = {
+      seoul:['heldSeoul','notHeldSeoul','progSeoul','avgSeoul'],
+      gyeonggi:['heldGyeonggi','notHeldGyeonggi','progGyeonggi','avgGyeonggi'],
+      local:['heldLocal','notHeldLocal','progLocal','avgLocal']
+    };
+
+    Object.entries(groups).forEach(([key,g]) => {
+      const [hId, nId, pId, aId] = ids[key];
+      $(hId).textContent = g.held; 
+      $(nId).textContent = g.notHeld;
+      $(pId).textContent = g.prog;
+      const avg = g.nums.length ? g.nums.reduce((a,b)=>a+b,0)/g.nums.length : null;
+      $(aId).textContent = `평균 인원: ${avg===null?'-':avg.toFixed(1)}명 · 개최 ${g.nums.length}회 기준`;
+    });
+
+    const idsByColor = {'적':['winsRed','rateRed'],'황':['winsYellow','rateYellow'],'녹':['winsGreen','rateGreen'],'청':['winsBlue','rateBlue'],'자':['winsPurple','ratePurple'],'흑':['winsBlack','rateBlack']};
+    const wins = Object.fromEntries(Object.keys(idsByColor).map(c=>[c,0])); 
+    let recognized = 0;
+    
+    rows.forEach(r => {
+      const deck = String(r[4]??'').trim(), first = deck.charAt(0);
+      if(Object.prototype.hasOwnProperty.call(wins, first)) { wins[first]++; recognized++; }
+    });
+
+    Object.entries(idsByColor).forEach(([color,[countId,rateId]]) => {
+      $(countId).textContent = wins[color];$(rateId).textContent = recognized ? `${(wins[color]/recognized*100).toFixed(1).replace(/\.0$/,'')}%` : '0%';
+    });
+    $('recognizedWins').textContent = recognized; 
+    $('recognizedTotal').textContent = recognized ? '100%' : '0%';
+  }
+
+  function renderTable(){
+    const rows = monthsData[currentMonth] || [];
+    const q = $('searchInput').value.trim().toLowerCase();
+    const only = $('heldOnly').checked;
+    const tbody = $('dataTable').querySelector('tbody'); 
+    tbody.innerHTML = '';
+    let visible = 0;
+    const isUnlocked = !!unlockedMonths[currentMonth];
+
+    rows.forEach((row, i) => {
+      const upcoming = isUpcoming(row[2]);
+      const held = isHeld(row);
+      if(only && !held) return;
+      if(q && !row.join(' ').toLowerCase().includes(q)) return;
+      visible++;
+
+      const tr = document.createElement('tr');
+      let cells = '';
+      row.forEach((v, j) => {
+        let displayVal = esc(v);
+        if(j === 2 && upcoming && !String(v).includes('예정')) {
+          displayVal += ` <span class="badge upcoming">예정</span>`;
+        }
+        cells += `<td><span class="cell">${displayVal}</span></td>`;
+      });
+      if(isUnlocked) {
+        cells += `<td class="edit-col"><div class="row-actions"><button data-edit="${i}">수정</button><button class="danger" data-delete="${i}">삭제</button></div></td>`;
+      }
+      tr.innerHTML = cells; 
+      tbody.appendChild(tr);
+    });
+
+    $('noRows').classList.toggle('hidden', visible !== 0);$('dataTable').classList.toggle('hidden', visible === 0);
+    stats();
+
+    if(isUnlocked) {
+      tbody.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editRow(Number(b.dataset.edit))));
+      tbody.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => {
+        const i = Number(b.dataset.delete);
+        if(confirm(`${i+1}번째 행 데이터를 삭제할까요?`)){ 
+          monthsData[currentMonth].splice(i,1); 
+          save(); 
+          renderTable(); 
+        }
+      }));
+    }
+  }
+
+  function editRow(i){
+    const rows = monthsData[currentMonth];
+    const tr = [...$('dataTable').querySelector('tbody').rows].find(r => r.querySelector(`[data-edit="${i}"]`));
+    if(!tr) return;
+    tr.innerHTML = rows[i].map((v,j)=>`<td><span class="cell editing"><input data-field="${j}" value="${esc(v)}"></span></td>`).join('')+`<td><div class="row-actions"><button class="primary" data-save="${i}">저장</button><button data-cancel>취소</button></div></td>`;
+    tr.querySelector('[data-save]').addEventListener('click', () => {
+      tr.querySelectorAll('[data-field]').forEach(inp => rows[i][Number(inp.dataset.field)] = inp.value.trim());
+      save(); renderTable();
+    });
+    tr.querySelector('[data-cancel]').addEventListener('click', renderTable);
+    tr.querySelector('input').focus();
+  }
+
+  $('secretTrigger').addEventListener('click', () => {
+    const pw = prompt('관리자 비밀번호를 입력하세요:');
+    if(pw === PASSWORD) {
+      unlockedMonths[currentMonth] = true;
+      updateUI();
+    } else if(pw !== null) {
+      alert('비밀번호가 올바르지 않습니다.');
+    }
+  });
+
+  $('lockBtn').addEventListener('click', () => { unlockedMonths[currentMonth] = false; updateUI(); });
+
+  $('addRowBtn').addEventListener('click', () => {
+    if(!monthsData[currentMonth]) monthsData[currentMonth] = [];
+    monthsData[currentMonth].push(['','','','','']);
+    save(); renderTable();
+    const i = monthsData[currentMonth].length - 1;
+    const btn = $('dataTable').querySelector(`[data-edit="${i}"]`); 
+    if(btn) btn.click();
+  });
+
+  $('addMonthBtn').addEventListener('click', () => {
+    const keys = Object.keys(monthsData);
+    const lastKey = keys[keys.length - 1];
+    const mMatch = lastKey.match(/(\d{4})년\s*(\d{1,2})월/);
+    if(mMatch) {
+      let y = Number(mMatch[1]), m = Number(mMatch[2]) + 1;
+      if(m > 12) { m = 1; y++; }
+      const newKey = `${y}년 ${m}월`;
+      if(!monthsData[newKey]) {
+        monthsData[newKey] = [];
+        currentMonth = newKey;
+        unlockedMonths[newKey] = true; 
+        save();
+        updateUI();
+      }
+    }
+  });
+
+  $('searchInput').addEventListener('input', renderTable);
+  $('heldOnly').addEventListener('change', renderTable);$('exportBtn').addEventListener('click', () => {
+    const rows = monthsData[currentMonth] || [];
+    const data = [["지역", "매장명", "날짜", "인원 수", "우승 덱"], ...rows];
+    const csv = '\uFEFF' + data.map(r => r.map(v => '"' + String(v??'').replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `braverse-${currentMonth.replace(/[^0-9]/g, '')}-tournaments.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  $('importFile').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    try {
+      const text = await file.text();
+      alert('CSV 파일을 가져왔습니다.');
+    } catch(err) {
+      alert('파일을 읽지 못했습니다.');
+    }
+    e.target.value = '';
+  });
+
+  $('resetBtn').addEventListener('click', () => {
+    if(confirm('현재 달의 데이터를 초기화할까요?')) {
+      monthsData[currentMonth] = [];
+      save();
+      renderTable();
+    }
+  });
+
+  load();
+  updateUI();
+})();
+</script>
+</body>
+</html>
